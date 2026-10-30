@@ -1,0 +1,41 @@
+name: zhumakhan-zhasulan-student-api
+
+services:
+  db:
+    image: postgres:16
+    container_name: zhumakhan-zhasulan-db
+    environment:
+      POSTGRES_DB: studentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - zhumakhan-zhasulan-pgdata:/var/lib/postgresql/data
+    networks:
+      - zhumakhan-zhasulan-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d studentdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    image: zhumakhan-zhasulan-student-api:v1.0-zhumakhan-zhasulan
+    container_name: zhumakhan-zhasulan-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/studentdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - zhumakhan-zhasulan-net
+
+volumes:
+  zhumakhan-zhasulan-pgdata:
+
+networks:
+  zhumakhan-zhasulan-net:
