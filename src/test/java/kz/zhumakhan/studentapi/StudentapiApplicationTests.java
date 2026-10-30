@@ -9,5 +9,8 @@ class StudentapiApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
+ @Test
+    void studentNameTest() {
+        org.junit.jupiter.api.Assertions.assertEquals("Zhasulan", "WrongName");
+    }
 }
