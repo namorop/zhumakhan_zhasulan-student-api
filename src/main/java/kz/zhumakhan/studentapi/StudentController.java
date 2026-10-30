@@ -35,7 +35,14 @@ public class StudentController {
     public Student create(@Valid @RequestBody Student s) {
         return repo.save(s);
     }
-
+    @PutMapping("/api/students/{id}")
+    public Student update(@PathVariable Long id, @Valid @RequestBody Student s) {
+        Student old = repo.findById(id).orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Student " + id + " not found"));
+        old.setName(s.getName());
+        old.setGroupName(s.getGroupName());
+        return repo.save(old);
+    }
     @DeleteMapping("/api/students/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
